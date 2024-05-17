@@ -9,17 +9,17 @@ namespace Course
     internal class PriorityQueue<T>
     {
         int size;
-        SortredDictionary<int, Queue<T>> storage;
+        SortedDictionary <int, Queue<T>> storage;
         public PriorityQueue()
         {
-            storage = new SortredDictionary<int, Queue<T>>();
+            storage = new SortedDictionary<int, Queue<T>>();
             size = 0;
         }
         public int Size() => size;
 
         public void Enqueue(int priority, T item)
         {
-            if (storage.ContainsKey(priority))
+            if (!storage.ContainsKey(priority))
             {
                 storage.Add(priority, new Queue<T>());
             }

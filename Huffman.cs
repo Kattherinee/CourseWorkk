@@ -30,10 +30,10 @@ namespace Course
         {
             List<byte> header = new List<byte>();
             //запись длины 4 байта
-            header.Add((byte)(datalength && 255));//младшие биты последние 8
-            header.Add((byte)((datalength >> 8) && 255));
-            header.Add((byte)((datalength >> 16) && 255));
-            header.Add((byte)((datalength >> 24) && 255));
+            header.Add((byte)(datalength & 255));//младшие биты последние 8
+            header.Add((byte)((datalength >> 8) & 255));
+            header.Add((byte)((datalength >> 16) & 255));
+            header.Add((byte)((datalength >> 24) & 255));
 
             for (int j = 0; j < 256; j++)
                 header.Add((byte)freqs[j]);
@@ -44,7 +44,7 @@ namespace Course
             List<byte> bits = new List<byte>();
             byte sum = 0;
             byte bit = 1;
-            foreach (byte symbol in codes)
+            foreach (byte symbol in data)
                 foreach (char c in codes[symbol])
                 {
                     if (c == '1') sum |= bit;
@@ -65,14 +65,14 @@ namespace Course
             Next(root, "");
             return codes;
 
-            void Next(Node root, string code)
+            void Next(Node node, string code)
             {
-                if (Node.bit0 == null)
-                    codes[Node.symbol] = code;
+                if (node.bit0 == null)
+                    codes[node.symbol] = code;
                 else
                 {
-                    Next(Node.bit0, code + "0");
-                    Next(Node.bit1, code + "1");
+                    Next(node.bit0, code + "0");
+                    Next(node.bit1, code + "1");
                 }
             }
         }
@@ -90,14 +90,14 @@ namespace Course
             for (int i = 0; i < 256; i++)
             {
                 if (freqs[i] > 0)
-                    pq.Enqueue(freqs[i], new Node((byte)j, freqs[i]));
+                    pq.Enqueue(freqs[i], new Node((byte)i, freqs[i]));
             }
-            while (pq.Size > 1)
+            while (pq.Size() > 1)
             {
                 Node bit0 = pq.Dequeue();
                 Node bit1 = pq.Dequeue();
                 int freq = bit0.freq + bit1.freq;
-                Node next = new Node(bit0, bit1, freq);
+                Node next = new Node(freq, bit0, bit0);
                 pq.Enqueue(freq, next);
 
             }
