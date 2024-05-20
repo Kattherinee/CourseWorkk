@@ -152,7 +152,18 @@ namespace Course
             int[] freqs = new int[256];
             foreach (byte d in data)
                 freqs[d]++;
+            NormalizeFreqs();
             return freqs;
+
+            void NormalizeFreqs()
+            {
+                int max = freqs.Max();
+                if (max <= 255) return;
+                for (int j = 0; j < 256; j++)
+                    if (freqs[j] > 0)
+                        freqs[j] = 1 + freqs[j] * 255 / (max + 1);
+            }
+
         }
 
 
