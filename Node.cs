@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Course
 {
-     class Node
+    class Node
     {
+
         public readonly byte symbol;
         public readonly int freq;
         public readonly Node bit0;
@@ -18,11 +19,12 @@ namespace Course
             this.symbol = symbol;
             this.freq = freq;
         }
-        public Node(int freq, Node bit0, Node bit1)
+        public Node(Node bit0, Node bit1, int freq)
         {
-            this.freq = freq;
             this.bit0 = bit0;
             this.bit1 = bit1;
+            this.freq = freq;
         }
+
     }
 }

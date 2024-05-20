@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,34 +10,32 @@ namespace Course
     internal class PriorityQueue<T>
     {
         int size;
-        SortedDictionary <int, Queue<T>> storage;
+        SortedDictionary<int, Queue<T>> storage;
+
         public PriorityQueue()
         {
             storage = new SortedDictionary<int, Queue<T>>();
-            size = 0;
+            size= 0;
         }
-        public int Size() => size;
+        
+          public int Size() => size;
 
         public void Enqueue(int priority, T item)
         {
             if (!storage.ContainsKey(priority))
-            {
                 storage.Add(priority, new Queue<T>());
-            }
             storage[priority].Enqueue(item);
             size++;
         }
-        public T Dequeue() //Вернем элемент ьтипа Т из очереди
+        public T Dequeue()
         {
-            if (size == 0) throw new System.Exception("Queue is empty");
+            if (size == 0)
+                throw new System.Exception("Queue is empty");
             size--;
             foreach (Queue<T> q in storage.Values)
-            {
-                if (q.Count > 0) return q.Dequeue();
-
-            }
+                if (q.Count > 0)
+                    return q.Dequeue();
             throw new System.Exception("Queue error");
-            // перебираем в порядке приоритета, находя самую приоритетную ненулевую и вытаскиваем оттуда элемент
         }
     }
 }
