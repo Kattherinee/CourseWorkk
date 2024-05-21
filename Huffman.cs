@@ -55,7 +55,7 @@ namespace Course
             return data.ToArray();
         }
 
-            private void ParseHeader(byte[] arch, out int dataLength, out int startIndex, out int[] freqs)
+        private void ParseHeader(byte[] arch, out int dataLength, out int startIndex, out int[] freqs)
         {
             dataLength = arch[0] |
                         (arch[1] << 8) |
@@ -68,7 +68,7 @@ namespace Course
 
         }
 
-    private byte[] CompressBytes(byte[] data)
+        private byte[] CompressBytes(byte[] data)
         {
             int[] freqs = CalculateFreq(data);
             byte[] head = CreateHeader(data.Length, freqs);
@@ -100,7 +100,7 @@ namespace Course
             {
                 Node bit0 = pq.Dequeue();
                 Node bit1 = pq.Dequeue();
-                int freq = bit0.freq +bit1.freq;
+                int freq = bit0.freq + bit1.freq;
                 Node next = new Node(bit0, bit1, freq);
                 pq.Enqueue(freq, next);
             }
@@ -126,12 +126,12 @@ namespace Course
                         bit = 1;
                     }
                 }
-                    if (bit > 1) 
+            if (bit > 1)
                 bits.Add(sum);
-                    return bits.ToArray();
+            return bits.ToArray();
         }
 
-            private string[] CreateHuffmanCode(Node root)
+        private string[] CreateHuffmanCode(Node root)
         {
             string[] codes = new string[256];
             Next(root, "");
