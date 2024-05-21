@@ -12,22 +12,60 @@ namespace Course
     {
         public void CompressFile(string dataFilename, string archFilename)
         {
-            byte[] data = File.ReadAllBytes(dataFilename);
-            byte[] arch = CompressBytes(data);
-            File.WriteAllBytes(archFilename, arch);
+            try
+            {
+                byte[] data = File.ReadAllBytes(dataFilename);
+                byte[] arch = CompressBytes(data);
+                File.WriteAllBytes(archFilename, arch);
+            }
+            catch (OutOfMemoryException)
+            {
+                Console.WriteLine("Недостаточно памяти для обработки файла. Увеличьте доступную память или используйте другой способ обработки.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при сжатии файла: {ex.Message}");
+            }
+            
         }
 
         public void DecompressFile(string archFilename, string dataFilename)
         {
-            byte[] arch = File.ReadAllBytes(archFilename);
-            byte[] data = DecompressBytes(arch);
-            File.WriteAllBytes(dataFilename, data);
+            try
+            {
+                byte[] arch = File.ReadAllBytes(archFilename);
+                byte[] data = DecompressBytes(arch);
+                File.WriteAllBytes(dataFilename, data);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при распаковке файла: {ex.Message}");
+            }
         }
 
         private byte[] DecompressBytes(byte[] arch)
         {
+            if (arch == null || arch.Length < 4)
+            {
+                Console.WriteLine("Неверный формат архивного файла.");
+                return null;
+            }
+
             ParseHeader(arch, out int dataLength, out int startIndex, out int[] freqs);
+
+            if (startIndex < 0 || dataLength < 0 || dataLength > arch.Length - startIndex)
+            {
+                Console.WriteLine("Неверный формат архивного файла.");
+                return null;
+            }
+
             Node root = CreateHuffmanTree(freqs);
+            if (root == null)
+            {
+                Console.WriteLine("Ошибка при построении дерева Хаффмана.");
+                return null;
+            }
+
             byte[] data = Decompress(arch, startIndex, dataLength, root);
             return data;
         }
