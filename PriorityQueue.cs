@@ -1,40 +1,49 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Course
 {
-    internal class PriorityQueue<T>
- {
-     int size;
-     SortedDictionary<int, Queue<T>> storage;
+    public interface IPriorityQueue<T>
+    {
+        int Size();
+        void Enqueue(int priority, T item);
+        T Dequeue();
+    }
+    public class PriorityQueue<T> : IPriorityQueue<T>
+    {
+        int size =0 ;
+        SortedDictionary<int, Queue<T>> storage = new SortedDictionary<int, Queue<T>>();
 
-     public PriorityQueue()
-     {
-         storage = new SortedDictionary<int, Queue<T>>();
-         size= 0;
-     }
-     
-       public int Size() => size;
+        public int Size() => size;
 
-     public void Enqueue(int priority, T item)
-     {
-         if (!storage.ContainsKey(priority))
-             storage.Add(priority, new Queue<T>());
-         storage[priority].Enqueue(item);
-         size++;
-     }
-     public T Dequeue()
-     {
-         if (size == 0)
-             throw new System.Exception("Queue is empty");
-         size--;
-         foreach (Queue<T> q in storage.Values)
-             if (q.Count > 0)
-                 return q.Dequeue();
-         throw new System.Exception("Queue error");
-     }
- }
+        public void Enqueue(int priority, T item)
+        {
+            if (!storage.ContainsKey(priority))
+                storage[priority] = new Queue<T>();
+            storage[priority].Enqueue(item);
+            size++;
+        }
+
+        public T Dequeue()
+        {
+            if (size == 0) throw new Exception("Queue is empty");
+            foreach (var queue in storage.Values)
+            {
+                if (queue.Count > 0)
+                {
+                    size--;
+                    return queue.Dequeue();
+                }
+            }
+            throw new Exception("Queue error");
+        }
+    }
+
+
+
+
 }
